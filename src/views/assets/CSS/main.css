@@ -1,0 +1,153 @@
+body{
+    color: rgb(200,200,200);
+}
+.nav-lk-active{
+    color: rgb(255,255,255);
+}
+.nav-item{
+    margin-left: 12px;
+}
+.nav-lk{
+    color: rgb(200,200,200);
+}
+a:hover{
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 0.4;
+    color: white;
+}
+.window {
+    height: 500px;
+    width: 500px;
+    overflow: hidden;
+ }
+ 
+ .scrollable {
+   overflow: scroll;
+   height: 100%;
+ }
+ h2{
+     color: rgb(255,255,255);
+     text-align: center;
+ }
+ /*TABLE*/
+ .table{
+    width: 702px;
+    display: block;
+ }
+ 
+ tbody{
+    color: white;
+    height: 520px;
+    display: inline-block;
+    width: 100%;
+    overflow: auto;
+ }
+ .table tbody td,.table thead th {
+    width: 100px;
+    display: inline-block;
+}
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+ thead{
+    color: rgb(50,50,50);
+    background-color: rgb(200,200,200);
+    border: 1px solid rgb(200,200,200);
+    display: inline-block;
+    width: 100%;
+    height: auto;
+ }
+ /*TABLE2*/
+ .table2{
+    width: 1002px;
+    display:block;
+}
+.table2 tbody td,.table2 thead th {
+    width: 200px;
+    display: inline-block;
+}
+
+ tbody tr td{
+    border: 1px solid rgb(200,200,200);
+ }
+ html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+#barChart{
+    background-color: wheat;
+    border-radius: 6px;
+  /*   Check out the fancy shadow  on this one */
+    box-shadow: 0 3rem 5rem -2rem rgba(0, 0, 0, 0.6);
+  }
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+  .ta{
+    background-color:rgb(200,200,200);
+    color:rgb(50,50,50);
+    display: inline;
+    vertical-align: top;
+    text-align: center;
+    }
+    canvas{
+
+        height:280px !important;
+      
+      }
+    label{
+        margin-bottom: 0rem;
+        display: block;
+    }
+.nav-sim{
+    margin-left: 10px;text-align: center;
+    position: relative;
+    margin-bottom: 1rem;
+}
+img{
+    width: 150px;
+    height: 150px;
+    vertical-align: initial;
+}
+p{
+    margin-bottom: 0rem;
+    display: flex;
+}
+.butt-sim{
+    background-color: rgb(200,200,200);
+    border-radius: 15px;
+    color: rgb(50,50,50);
+    margin-right: 10px;
+    position: relative;
+    border: none;
+    outline: none;
+    text-align: center;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+button:disabled,
+button[disabled]{
+    background-color: rgb(170,170,170);
+}
+select:disabled,
+select[disabled]{
+    background-color: rgb(170,170,170);
+}
+.butt-sim:hover {background-color: rgb(170,170,170);}
+
+.butt-sim:active {
+  background-color: rgb(170,170,170);
+  transform: translateY(4px);
+}
+.butt-sim:focus {
+    outline: none;
+}

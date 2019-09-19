@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>SO</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/CSS/main.css">
+</head>
+
+<body style="background-color: rgb(50,50,50);">
+    <header>
+        <nav class="navbar navbar-light navbar-expand-md">
+            <div class="container-fluid"><a class="navbar-brand" href="#"></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse"
+                    id="navcol-1">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item" role="presentation"><a class="nav-lk" href="recursos.html">Recursos</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-lk" href="procesos.html" >Procesos</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-lk-active" href="#" >Simulador</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div>
+        <h2>Simulador</h2>
+        <div class="nav-sim">
+            <button id="cargar" class="butt-sim" onclick="cargar();">Cargar</button>
+            <p class="butt-sim" style="background-color: rgb(50,50,50);color: rgb(200,200,200);display: inline;border-radius: 0px;">Metodo:</p>
+            <select class="butt-sim" id="metodos">
+                <option value="0" selected>FIFO</option>
+                <option value="1">Round Robin</option>
+                <option value="2">Prioridad</option>
+                <option value="3">SFJ</option>
+            </select>
+            <p class="butt-sim" style="background-color: rgb(50,50,50);color: rgb(200,200,200);display: inline;border-radius: 0px;">Q:</p>
+            <select class="butt-sim" id="quantum">
+                <option value="1" >1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4"selected>4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>
+            <button id="matar" onclick="matar()" class="butt-sim" >Matar</button>
+            <button id="parar" onclick="parar()" class="butt-sim" >Parar</button>
+            <button id="pausar" onclick="pausar()" class="butt-sim" >Pausar</button>
+            <button id="continuar" onclick="continuar()" class="butt-sim" style="display: none;">Continuar</button>
+            <button id="iniciar" class="butt-sim" onclick="iniciar()">Iniciar</button>
+        </div>
+        <div class="nav-sim" style="float:left;">
+                <table class="table">
+                        <thead class="thead-light">
+                        <tr class="head-table">
+                            <th scope="col">Nombre </th>
+                            <th scope="col">PID </th>
+                            <th scope="col">Estado </th>
+                            <th scope="col">Llegada </th>
+                            <th scope="col">Prioridad</th>
+                            <th scope="col">Memoria </th>
+                            <th scope="col">Rafaga </th>
+                        </tr>
+                        </thead>
+                        <tbody style="height: 465px;" id="bodyTable"></tbody>
+                    </table>
+        </div>
+        <div style="float:left;margin-left: 30px;">
+            <div class="nav-sim" style="display: contents;">
+                <p>Preparados &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Ejecutando Tiempo:<span id="time"></span>s</p>
+                    <textarea id="preparados" class="ta"rows="7" cols="15" readonly>
+                    </textarea>
+                    <img src="../../src/views/assets/img/double arrow.jpg">
+                    <textarea readonly id="ejecutando" class="ta"rows="7" cols="15" >
+                    </textarea>
+                    
+                <p style="transform: translateX(100px);">Bloqueados</p>
+                    <textarea readonly id="bloqueados"  rows="5" cols="15" id="title" class="ta" name="title" style="transform: translateX(100px);"></textarea>
+                    <img src="../../src/views/assets/img/2 arrow.png" style="height: auto;transform: translateX(120px);">
+                <br>
+                    <p style="transform: translateX(252px);">Finalizados</p>
+                    <textarea readonly id="finalizados"  rows="7" cols="20" id="title" class="ta"  name="title"style="transform: translateX(252px);"></textarea>
+                </div>
+        </div>
+</div>
+    <script src="assets/js/simulador.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

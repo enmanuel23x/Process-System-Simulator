@@ -1,0 +1,9 @@
+[
+{"nombre":"Word","pid":"2400","estado":"NUEVO","llegada":"1","prioridad":"3","memoria":"4096","tiempo":"10"},
+{"nombre":"System","pid":"2401","estado":"NUEVO","llegada":"0","prioridad":"0","memoria":"2048","tiempo":"4"},
+{"nombre":"Explorer.exe","pid":"2402","estado":"NUEVO","llegada":"2","prioridad":"1","memoria":"4096","tiempo":"4"},
+{"nombre":"Electron","pid":"2403","estado":"NUEVO","llegada":"3","prioridad":"6","memoria":"5120","tiempo":"15"},
+{"nombre":"Code","pid":"2404","estado":"NUEVO","llegada":"4","prioridad":"4","memoria":"10240","tiempo":"18"},
+{"nombre":"Chrome","pid":"2405","estado":"NUEVO","llegada":"5","prioridad":"2","memoria":"20480","tiempo":"12"},
+{"nombre":"Skype","pid":"2406","estado":"NUEVO","llegada":"6","prioridad":"5","memoria":"8192","tiempo":"10"}
+]

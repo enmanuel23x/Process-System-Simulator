@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>SO</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/CSS/main.css">
+</head>
+
+<body style="background-color: rgb(50,50,50);">
+    <header>
+        <nav class="navbar navbar-light navbar-expand-md">
+            <div class="container-fluid"><a class="navbar-brand" href="#"></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse"
+                    id="navcol-1">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item" role="presentation"><a class="nav-lk-active" href="#">Recursos</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-lk" href="procesos.html" >Procesos</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-lk" href="simulador.html" >Simulador</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div >
+            <h2>Recursos</h2>
+            <canvas id="chart1" width="400" height="100"></canvas>
+            <canvas id="chart2" width="400" height="100"></canvas>
+            <h3 style="font-size: 1.3rem;">Tiempo activo: <span id="tiempo-activo"></span></h3>
+    </div>
+    <script src="assets/js/Chart.min.js"></script>
+    <script>
+        var os = require('os-utils');
+        let os2= require('os')
+        let cpumodel=os2.cpus()[0].model
+        var cpulist=[]
+        var memlist=[]
+        var ctx = document.getElementById("chart1");
+        var ctx2 = document.getElementById("chart2");
+        var data = {
+                labels: ["60 sec","59 sec","58 sec","57 sec","56 sec","55 sec","54 sec","53 sec","52 sec","51 sec",
+                "50 sec","49 sec","48 sec","47 sec","46 sec","45 sec","44 sec","43 sec","42 sec","41 sec",
+                "40 sec","39 sec","38 sec","37 sec","36 sec","35 sec","34 sec","33 sec","32 sec","31 sec",
+                "30 sec","29 sec","28 sec","27 sec","26 sec","25 sec","24 sec","23 sec","22 sec","21 sec",
+                "20 sec","19 sec","18 sec","17 sec","16 sec","15 sec","14 sec","13 sec","12 sec","11 sec",
+                "10 sec","09 sec","08 sec","07 sec","06 sec","05 sec","04 sec","03 sec","02 sec","01 sec","0 sec"],
+
+                datasets: [{
+                    label:cpumodel+"|"+os2.arch()+"|  Nucleos: "+os.cpuCount(),
+                    data: [100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,100],
+                    backgroundColor: [
+                        'rgba(100, 100, 100, 0.25)',
+                        'rgba(100, 100, 100, 0.25)',
+                        'rgba(100, 100, 100, 0.25)',
+                        ],
+                    borderColor: [
+                        'rgba(200,200,200,1)',
+                        'rgba(200,200,200,1)',
+                        'rgba(200,200,200,1)',
+                        ],
+                    borderWidth: 2
+                },{
+                    label: 'CPU: ###%',
+                    data: [0,0,0,0,0,0,0,0,0,0,0,0],
+                    backgroundColor: [
+                        'rgba(100, 100, 200, 0.25)',
+                        'rgba(100, 100, 200, 0.25)',
+                        'rgba(100, 100, 200, 0.25)',
+                        ],
+                    borderColor: [
+                        'rgba(200,200,255,1)',
+                        'rgba(200,200,255,1)',
+                        'rgba(200,200,255,1)',
+                        ],
+                    borderWidth: 2
+                }]
+            };
+            var data2 = {
+                labels: ["60 sec","59 sec","58 sec","57 sec","56 sec","55 sec","54 sec","53 sec","52 sec","51 sec",
+                "50 sec","49 sec","48 sec","47 sec","46 sec","45 sec","44 sec","43 sec","42 sec","41 sec",
+                "40 sec","39 sec","38 sec","37 sec","36 sec","35 sec","34 sec","33 sec","32 sec","31 sec",
+                "30 sec","29 sec","28 sec","27 sec","26 sec","25 sec","24 sec","23 sec","22 sec","21 sec",
+                "20 sec","19 sec","18 sec","17 sec","16 sec","15 sec","14 sec","13 sec","12 sec","11 sec",
+                "10 sec","09 sec","08 sec","07 sec","06 sec","05 sec","04 sec","03 sec","02 sec","01 sec","0 sec"],
+
+                datasets: [{
+                    label: 'Memoria total:',
+                    data: [100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,
+                        100,100,100,100,100,100,100,100,100,100,100],
+                    backgroundColor: [
+                        'rgba(100, 100, 100, 0.25)',
+                        'rgba(100, 100, 100, 0.25)',
+                        'rgba(100, 100, 100, 0.25)',
+                        ],
+                    borderColor: [
+                        'rgba(200,200,200,1)',
+                        'rgba(200,200,200,1)',
+                        'rgba(200,200,200,1)',
+                        ],
+                    
+                    borderWidth: 2
+                },{
+                    label: 'Memoria disponible: ###%',
+                    data: [0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,
+                        0,0,0,0,0,0,0,0,0,0,0],
+                    backgroundColor: [
+                        'rgba(100, 100, 200, 0.25)',
+                        'rgba(100, 100, 200, 0.25)',
+                        'rgba(100, 100, 200, 0.25)',
+                        ],
+                    borderColor: [
+                        'rgba(200,200,255,1)',
+                        'rgba(200,200,255,1)',
+                        'rgba(200,200,255,1)',
+                        ],
+                    borderWidth: 2
+                }]
+            };
+        function update(){
+            let time=os.sysUptime()
+            let days=Math.trunc(time/(3600*24))
+            let horas=Math.trunc((time/3600)-(days*24))
+            let minutos=Math.trunc((time-(horas*3600)-(days*24*3600))/60)
+            let sec=time-(horas*3600)-(minutos*60)-(days*24*3600)
+            document.getElementById('tiempo-activo').innerHTML=days+":"+horas+":"+minutos+":"+sec
+            readmemory();
+            readcpu();
+            setTimeout("update()",1000);
+        }
+        function readmemory(){
+            let memperc=Math.round(os.freememPercentage() * 10000) / 100
+            chart2.data.datasets[1].label='Memoria disponible: '+memperc+'%'
+            chart2.data.datasets[0].label='Memoria total:'+Math.round(os.totalmem())+'MB'
+            memlist.push(memperc)
+            if(memlist.length>=61){
+                memlist.shift()
+            }else{
+                memlist=memlist.reverse()
+                do{
+                    memlist.push(0);
+                }while(memlist.length<61)
+                memlist=memlist.reverse()
+            }
+            chart2.data.datasets[1].data= memlist;
+            chart2.update();
+        }
+        function readcpu(){
+            os.cpuUsage(function(v){
+                chart1.data.datasets[1].label="CPU: "+Math.round(v * 10000) / 100+"%";
+                cpulist.push((v*100));
+                });
+            
+            if(cpulist.length>=61){
+                cpulist.shift()
+            }else{
+                cpulist=cpulist.reverse()
+                do{
+                    cpulist.push(0);
+                }while(cpulist.length<61)
+                cpulist=cpulist.reverse()
+            }
+            chart1.data.datasets[1].data= cpulist;
+            chart1.update()
+        }
+        
+        var options = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        }
+                    }]
+                }
+            };
+        
+        var chart1 = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+        var chart2 = new Chart(ctx2, {
+            type: 'line',
+            data: data2,
+            options: options
+        });
+        update();
+        </script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
