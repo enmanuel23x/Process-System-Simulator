@@ -12,32 +12,14 @@
     "chart.js": "^2.8.0",
     "current-processes": "^0.2.1",
     "electron": "^6.0.0",
-    "input-event": "^1.2.6",
-    "iohook": "^0.6.1",
-    "is-running": "^2.1.0",
     "lodash": "^4.17.15",
     "os-utils": "0.0.14",
     "ps-node": "^0.1.6",
     "psaux": "^0.4.0",
     "systeminformation": "^4.14.10",
-    "tasklist": "^4.0.0",
-    "win-ps": "0.0.1",
-    "xev-emitter": "0.0.1"
+    "tasklist": "^4.0.0"
   },
   "devDependencies": {
     "electron-packager": "^14.0.6"
-  },"iohook": {
-  "targets": [
-    "node-59",
-    "electron-54"
-  ],
-  "platforms": [
-    "win32",
-    "darwin"
-  ],
-  "arches": [
-    "x64",
-    "ia32"
-  ]
-}
+  }
 }

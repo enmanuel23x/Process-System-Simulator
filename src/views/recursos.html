@@ -198,24 +198,6 @@
             data: data2,
             options: options
         });
-        /*const tasklist = require('tasklist');
-(async () => {
-    list=(await tasklist({verbose: true}))
-    list2=[]
-    for(i=0;i<list.length;i++){
-        if(list[i].status!="Unknown"){
-            list2.push(list[i].imageName+"-"+list[i].status)
-        }
-    }
-    console.log(list2)
-})();
-const ps = require('win-ps');
-
-ps.snapshot(['Name','ExecutionState']).then((list) => {
-
-    console.log(list)
-
-})*/
 const si = require('systeminformation');
 
 si.processes()
