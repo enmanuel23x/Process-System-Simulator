@@ -1,116 +1,133 @@
 var _ = require('lodash');
 var ps = require('current-processes');
 var sorted
-function read(){
-ps.get(function(err, processes) {
-    
-    var html=''
-    var record=''
-    var arrpid = []
-    var arrcpu = []
-    var arrmem1= []
-    var arrmem2= []
-    var count = 0,cp=0,mem=0,memp=0
-    sorted = _.sortBy(processes, 'name');
-    console.log(sorted)
-    console.log("yes")
-    for (var i = 0; i < sorted.length; i++) {
-        if(record!=sorted[i].name){
-            
-            if(count==1){
-                console.log("cast")
+var arr=[]
+async function read(){
+    arr=[]
+sorted=[]
+const si = require('systeminformation');
+// promises style - new since version 3
+l = await si.processes()
+l=l.list
+
+l = _.sortBy(l, 'pid');
+    const psaux =require('psaux')
+	psaux().then(list2 => {
+        list2=_.sortBy(list2, 'pid');
+        count=0;
+        count=0
+	    for(i=0;i<list2.length;i++){
+                for(k=0;k<l.length;k++){
+                    if(list2[i].pid==l[k].pid){
+                        if(list2[i].stat!=undefined){
+                        arr.push([list2[i].name,list2[i].pid,list2[i].stat,l[k].pcpu,l[k].pmem])
+                        }else{
+                            arr.push([list2[i].name,list2[i].pid,'?',l[k].pcpu,l[k].pmem])
+                        }
+                        break
+                    }else if(k==l.length-1){
+                        if(list2[i].stat!=undefined){
+                            arr.push([list2[i].name,list2[i].pid,list2[i].stat,'?','?'])
+                        }else{
+                            arr.push([list2[i].name,list2[i].pid,'?','?','?'])
+                            }
+                        }
+                }
+                
+            }
+        html=''
+        
+    for (var i = 0; i < arr.length; i++) {
                     html += '<tr class="breakrow">';
                     html += '<td>';
-                    html += record;
+                    html += arr[i][0];
                     html += '</td>';
                     html += '<td>';
-                    html += arrpid[0];
+                    html += arr[i][1];
                     html += '</td>';
                     html += '<td>';
-                    html += arrcpu[0];
+                    html += arr[i][2];
                     html += '</td>';
                     html += '<td>';
-                    html += arrmem1[0];
+                    html += arr[i][3];
                     html += '</td>';
                     html += '<td>';
-                    html += arrmem2[0];
+                    if(arr[i][4]!="?"){
+                        html += Math.round(parseFloat(arr[i][4])*10000)/100;
+                    }else{
+                        html += arr[i][4]
+                    }
+                    
                     html += '</td>';
                     html += '</tr>';
-            }else if(count>1){
-                html += '<tr class="breakrow">';
-                html += '<td>';
-                html += record;
-                html += '</td>';
-                html += '<td style="color:rgb(50,50,50)">empty '; 
-                html += '</td>';
-                html += '<td>';
-                html += cp
-                html += '</td>';
-                html += '<td>';
-                html += memp
-                html += '</td>';
-                html += '<td>';
-                html += mem
-                html += '</td>';
-                html += '</tr>';
-                for (var j = 0; j < count; j++) {
-                    html += '<tr class="datarow">';
-                    html += '<td>';
-                    html += record;
-                    html += '</td>';
-                    html += '<td>';
-                    html += arrpid[j];
-                    html += '</td>';
-                    html += '<td>';
-                    html += arrcpu[j];
-                    html += '</td>';
-                    html += '<td>';
-                    html += arrmem1[j];
-                    html += '</td>';
-                    html += '<td>';
-                    html += arrmem2[j];
-                    html += '</td>';
-                    html += '</tr>';
-                }
-            }
-        
-        record=sorted[i].name
-        arrpid = []
-        arrcpu = []
-        arrmem1= []
-        arrmem2= []
-        count = 0
-        cp=0
-        mem=0
-        memp=0
-        if(count==0){
-                count+=1;
-            arrpid.push(sorted[i].pid);
-            arrcpu.push(sorted[i].cpu);
-            cp+=sorted[i].cpu;
-            mem+=sorted[i].mem.private/(1024*1024);
-            memp+=Math.round(sorted[i].mem.usage);
-            arrmem1.push(Math.round(sorted[i].mem.usage));
-            arrmem2.push(sorted[i].mem.private/(1024*1024));
-            }
-        }else if(record!=sorted[i+1].name && count==0){
-        }else{
-            count+=1;
-            arrpid.push(sorted[i].pid);
-            arrcpu.push(sorted[i].cpu);
-            cp+=sorted[i].cpu;
-            mem+=sorted[i].mem.private/(1024*1024);
-            memp+=Math.round(sorted[i].mem.usage);
-            arrmem1.push(Math.round(sorted[i].mem.usage));
-            arrmem2.push(sorted[i].mem.private/(1024*1024));
-       
-        }
     }
     document.getElementById('bodyTable').innerHTML = html;
-    /*console.log(sorted[sorted.length-1]);
-    console.log(sorted[sorted.length-1].cpu);
-    console.log("yes")*/
+    document.getElementById('prop').innerHTML = arr.length;
+    if(arr.length!=0){
+        writediagram()
+        }
+setTimeout("read()",5000);
 });
-setTimeout("re()",1000);
+}
+function writediagram(){
+    d_x= document.getElementById('dead')
+    sl= document.getElementById('sleep')
+    r= document.getElementById('run')
+    st= document.getElementById('stop')
+    id= document.getElementById('idle')
+    sleep_i=0;
+    sleep_n=0;
+    dead=0;
+    zombie=0;
+    run=0;
+    stoped=0;
+    idle=0;
+    unknown=0;
+    for (var i = 0; i < arr.length; i++) {
+            switch ((""+arr[i][2]).charAt(0)){
+                case "D":
+                    sleep_n+=1;
+                    break;
+                case "S":
+                    sleep_i+=1;
+                    break;
+                case "R":
+                    run+=1;
+                    break;
+                case "T":
+                    stoped+=1;
+                    break;
+                case "X":
+                    dead+=1;
+                    break;
+                case "Z":
+                    zombie+=1;
+                    break;
+                case "I":
+                    idle+=1;
+                    break;
+                default:
+                    unknown+=1;
+                    break;
+            }
+        }
+    d_x.value="Muertos: "+dead+"\nZombie: "+zombie
+    sl.value="Interrumpibles: "+sleep_i+"\nNo interrumpibles: "+sleep_n
+    r.value="Ejecucion/Cola: "+run
+    st.value="Detenidos: "+stoped
+    id.value="Inactivos: "+idle+"\nDesconocidos: "+unknown
+}
+band_change=true;
+function change(){
+    document.getElementById('list').disabled=!band_change
+    document.getElementById('diag').disabled=band_change
+    if(band_change){
+    document.getElementById('table2').style.display='none';
+    document.getElementById('diagrama').style.display='block';
+    }else{
+        document.getElementById('table2').style.display='block';
+        document.getElementById('diagrama').style.display='none';
+        }
+        band_change=!band_change
 }
 read() 

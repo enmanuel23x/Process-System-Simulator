@@ -4,317 +4,218 @@ var tbody = table.getElementsByTagName("tbody")[0];
 var process=[];
 var tim=0;
 var time=document.getElementById("time");
-var prep=document.getElementById("preparados");
-var exec=document.getElementById("ejecutando");
-var bloq=document.getElementById("bloqueados");
-var final=document.getElementById("finalizados");
-var q=document.getElementById("quantum").value;
+var cola=document.getElementById("cola");
+var run=document.getElementById("run");
+var stop=document.getElementById("stop");
+var sleep=document.getElementById("sleep");
+var final=document.getElementById("dead");
+var q
+var prop_bloqueo =15 //%
 var count=0;
 var timeout="";
-document.getElementById("parar").disabled = true;
-document.getElementById("pausar").disabled = true;
-document.getElementById("continuar").disabled = true;
-document.getElementById("matar").disabled = true;
+var memo_ram=0;
+var memo_virtual=0;
 var bandbutton=true;
-//evento tabla
-tbody.onclick = function (e) {
-    e = e || window.event;
-    var data = [];
-    var target = e.srcElement || e.target;
-    if(prev!=""){
-        
-        if(prev.style.backgroundColor == "cyan"){
-            RellenarTabla();
-        }
-    }
-   
-    if(prev==e.path[1]){
-        RellenarTabla();
+var bandQAuto=true
+//Cambio de lista a simulador y simulador a lista
+var changevalue=true;
+function change(){
+    if(changevalue){
+        document.getElementById("lista").style.display="none";
+        document.getElementById("simulador").style.display="block";
     }else{
-        RellenarTabla();
-        e.path[1].style.backgroundColor = "cyan";
-        prev=e.path[1];
-        for(i=0;i<tbody.rows.length;i++){
-            if(e.path[1].rowIndex==(i+1)){
-                if(tbody.rows[i].cells[2].innerHTML=="EJECUTANDO"){
-                    document.getElementById("matar").disabled = false;
-                }else{
-                    document.getElementById("matar").disabled = true;
-                }
-            }
-        
-        }
+        document.getElementById("lista").style.display="block";
+        document.getElementById("simulador").style.display="none";
     }
-    while (target && target.nodeName !== "TR") {
-        
-        target = target.parentNode;
-    }
-    if (target) {
-        var cells = target.getElementsByTagName("td");
-        for (var i = 0; i < cells.length; i++) {
-            data.push(cells[i].innerHTML);
-        }
-    }
-};
-//eventos botones
-function parar(){
-    document.getElementById("parar").disabled = true;
-    document.getElementById("time").innerHTML=0;
-    document.getElementById("pausar").disabled = true;
-    document.getElementById("continuar").disabled = true;
-    clearTimeout(timeout);
-    exec.value="";
-    prep.value="";
+    document.getElementById("list").disabled=!changevalue
+    document.getElementById("simu").disabled=changevalue
+    changevalue=!changevalue
+}
+//actualizacion de memoria
+function memoact(){
+    memo_virtual=0;
+    memo_ram=0;
     for (i=0;i<process.length;i++){
-        if(process[i][1]!="BLOQUEADO" && process[i][1]!="FINALIZADO"){
-            tim=1;
-            process[i][2]="BLOQUEADO";
-            if(bloq.value==""){
-                bloq.value=process[i][1];
-            }else{
-                bloq.value+=" "+process[i][1]; 
-            }
-            
+        if(process[i][1]=="DETENIDO"){
+            memo_virtual+=parseInt(process[i][4])
+        }else if(process[i][1]=="EJECUTANDO" || process[i][1]=="PREPARADO"){
+            memo_ram+=parseInt(process[i][4])
         }
     }
-    llenarTabla();
+    document.getElementById("virt").innerHTML=memo_virtual;
+    document.getElementById("ram").innerHTML=memo_ram;
 }
-function matar(){
-    document.getElementById("pausar").style.display="inline-block";
-    document.getElementById("continuar").style.display="none";
-    document.getElementById("pausar").disabled = !true;
-    document.getElementById("continuar").disabled = true;
-    document.getElementById("matar").disabled = true;
-    clearTimeout(timeout);
-    if(process[0][1]!="BLOQUEADO" && process[0][1]!="FINALIZADO"){
-        tim=1;
-        process[0][2]="BLOQUEADO";
-        if(bloq.value==""){
-            bloq.value=process[0][1];
-        }else{
-            bloq.value+=" "+process[0][1]; 
-        }
-        llenarTabla();
-    }else{
-        alert("No se puede matar este proceso")
-    }
-    let metodo= document.getElementById("metodos");
-    metodo=metodo.options[metodo.selectedIndex].value;
-    switch(metodo) {
-            //FIFO
-            case "0":
-                timeout=setTimeout("FIFO()",1000);
-                break;
-            //Round Robin
-            case "1":
-                timeout=setTimeout("RoundRobin()",1000);
-                break;
-            //Prioridad
-            case "2":
-                timeout=setTimeout("Prioridad()",1000);
-                break;
-            //SJF
-            case "3":
-                timeout=setTimeout("SFJ()",1000);
-                break;
-        }
-}
+//eventos botones
 function iniciar(){
+    
     if(tbody.rows.length==0){
         alert("Lista sin procesos")
     }else{
         bloqbutton()
         let metodo= document.getElementById("metodos");
         metodo=metodo.options[metodo.selectedIndex].value;
-        let band=0,cont2=0;
-        let ejec=[];
+        metodo.disabled=true;
+        document.getElementById("quantum").disabled=true;
         switch(metodo) {
             //FIFO
             case "0":
                 process= process.sort(function(a,b) {
-                    return a[3] - b[3];
+                    return a[2] - b[2];
                 });
-                console.log(process)
                 for(i=0;i<process.length;i++){
                     if(i<1){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO";
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO";
                     }
                 }
                 llenarTabla();
-                document.getElementById("time").innerHTML=process[0][6];
-                tim=process[0][6];
-                
+                document.getElementById("time").innerHTML=process[0][5];
+                tim=process[0][5];
                 timeout=setTimeout("FIFO()",1000);
+                timeout2=setTimeout("bloquear()",1000);
                 break;
             //Round Robin
             case "1":
                 process= process.sort(function(a,b) {
-                    return a[3] - b[3];
+                    return a[2] - b[2];
                 });
                 for(i=0;i<process.length;i++){
-                    if(i==0){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                    if(i<1){
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO";
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO";
                     }
                 }
                 llenarTabla();
-                document.getElementById("time").innerHTML=process[0][6];
-                tim=process[0][6];
-                
+                q=document.getElementById("quantum").value;
+                if(q!=0){
+                    bandQAuto=false
+                }
+                q=getQ()
+                document.getElementById("time").innerHTML=process[0][5];
+                tim=process[0][5];
                 timeout=setTimeout("RoundRobin()",1000);
+                timeout2=setTimeout("bloquear()",1000);
                 break;
             //Prioridad
             case "2":
                 process= process.sort(function(a,b) {
-                    return a[4] - b[4];
+                    return a[3] - b[3];
                 });
                 for(i=0;i<process.length;i++){
-                    if(i==0){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                    if(i<1){
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO";
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO";
                     }
                 }
                 llenarTabla();
-                document.getElementById("time").innerHTML=process[0][6];
-                tim=process[0][6];
+                document.getElementById("time").innerHTML=process[0][5];
+                tim=process[0][5];
                 timeout=setTimeout("Prioridad()",1000);
-
+                timeout2=setTimeout("bloquear()",1000);
                 break;
-            //SFJ
+            //SJF
             case "3":
             process= process.sort(function(a,b) {
-                    return a[6] - b[6];
+                    return a[2] - b[2];
+                });
+            process= process.sort(function(a,b) {
+                    return a[5] - b[5];
                 });
                 for(i=0;i<process.length;i++){
-                    if(i==0){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                    if(i<1){
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO";
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO";
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO";
                     }
                 }
                 llenarTabla();
-                document.getElementById("time").innerHTML=process[0][6];
-                tim=process[0][6];
-                timeout=setTimeout("SFJ()",1000);
+                document.getElementById("time").innerHTML=process[0][5];
+                tim=process[0][5];
+                timeout=setTimeout("SJF()",1000);
+                timeout2=setTimeout("bloquear()",1000);
                 break;
         }
     }
 }
 function cargar(){
-    var fs=require('fs');
-    var data=fs.readFileSync('./src/views/assets/js/data.json', 'utf8');
-    var words=JSON.parse(data);
+    n=50
+    //tr 20-25
+    //alto 15-19
+    //normal 10-14
+    //bajo 5-9
+    //segundo plano 0-4
+    lp=[]
+    for (i=0;i<=n;i++){
+        PID = i;
+        PName="Pr-"+i
+        tBurst = parseInt((Math.random() * 9 + 1))
+        tBloqueado = parseInt((Math.random() * 9 + 1))
+        prioridad = parseInt((Math.random() * 25))
+        memo= 1024 * parseInt(Math.random()*9+1)
+        quant = parseInt(Math.random()*4+1) 
+        lp.push([PName,'NUEVO',PID,prioridad,memo,tBurst,tBloqueado,quant])
+    }
     html='';
     let p=[]
-    process=[]
-    for (var i = 0; i < words.length; i++) {
-        p=[]
-        p.push(words[i].nombre)
-        p.push(words[i].pid)
-        p.push(words[i].estado)
-        p.push(words[i].llegada)
-        p.push(words[i].prioridad)
-        p.push(words[i].memoria)
-        p.push(words[i].tiempo)
-        process.push(p)
+    process=lp
+    for (var i = 0; i < lp.length; i++) {
         html += '<tr>';
         html += '<td>';
-        html += words[i].nombre;
+        html += lp[i][0];
+        html += '</td>';
+        html += '<td>Nuevo';
         html += '</td>';
         html += '<td>';
-        html += words[i].pid;
-        html += '</td>';
-        html += '<td id="'+i+'">';
-        html += words[i].estado;
+        html += lp[i][2];
         html += '</td>';
         html += '<td>';
-        html += words[i].llegada;
+        html += lp[i][3];
         html += '</td>';
         html += '<td>';
-        html += words[i].prioridad;
+        html += lp[i][4];
         html += '</td>';
         html += '<td>';
-        html += words[i].memoria;
-        html += '</td>';
-        html += '<td>';
-        html += words[i].tiempo;
+        html += lp[i][5];
         html += '</td>';
         html += '</tr>';
     }
-    console.log(process)
     document.getElementById('bodyTable').innerHTML = html;
 }
 function bloqbutton(){
-        document.getElementById("parar").disabled = !bandbutton;
-        document.getElementById("pausar").disabled = !bandbutton;
-        document.getElementById("continuar").disabled = !bandbutton;
         document.getElementById("cargar").disabled = bandbutton;
         document.getElementById("metodos").disabled = bandbutton;
         document.getElementById("iniciar").disabled = bandbutton;
         bandbutton=!bandbutton;
 }
-function pausar(){
-    clearTimeout(timeout);
-    document.getElementById("pausar").disabled = true;
-    document.getElementById("pausar").style.display="none";
-    document.getElementById("continuar").disabled = !true;
-    document.getElementById("continuar").style.display="inline-block";
-}
-function continuar(){
-    document.getElementById("pausar").style.display="inline-block";
-    document.getElementById("continuar").style.display="none";
-    document.getElementById("pausar").disabled = !true;
-    document.getElementById("continuar").disabled = true;
-    let metodo= document.getElementById("metodos");
-    metodo=metodo.options[metodo.selectedIndex].value;
-    switch(metodo) {
-            //FIFO
-            case "0":
-                timeout=setTimeout("FIFO()",1000);
-                break;
-            //Round Robin
-            case "1":
-                timeout=setTimeout("RoundRobin()",1000);
-                break;
-            //Prioridad
-            case "2":
-                timeout=setTimeout("Prioridad()",1000);
-                break;
-            //SJF
-            case "3":
-                timeout=setTimeout("SFJ()",1000);
-                break;
-        }
-}
 //llenado de tabla(colores)
 function RellenarTabla(){
+    memoact()
     let color="";
         for(i=0;i<tbody.rows.length;i++){
-            switch(tbody.rows[i].cells[2].innerHTML){
+            switch(tbody.rows[i].cells[1].innerHTML){
                 case "FINALIZADO":
                     color="green";
                 break;
@@ -335,20 +236,24 @@ function RellenarTabla(){
         }
 }
 function llenarTabla(){
+    memoact()
     let color="",pos;
     for(j=0;j<process.length;j++){
         pos=-1;
         for(i=0;i<tbody.rows.length;i++){
-            if(tbody.rows[i].cells[1].innerHTML==process[j][1]){
+            if(tbody.rows[i].cells[0].innerHTML==process[j][0]){
                 pos=i;break;
             }
         }
-        switch(process[j][2]){
+        switch(process[j][1]){
+            case "DETENIDO":
+                color="red";
+                break;
             case "FINALIZADO":
                 color="green";
                 break;
-            case "BLOQUEADO":
-                color="red";
+            case "ESPERA":
+                color="SeaGreen";
                 break;
             case "EJECUTANDO":
                 color="orange";
@@ -358,10 +263,11 @@ function llenarTabla(){
                 break;
         }
         if(pos>-1){
+            tbody.rows[pos].cells[1].innerHTML=process[j][1];
             tbody.rows[pos].cells[2].innerHTML=process[j][2];
             tbody.rows[pos].cells[3].innerHTML=process[j][3];
             tbody.rows[pos].cells[4].innerHTML=process[j][4];
-            tbody.rows[pos].cells[6].innerHTML=process[j][6];
+            tbody.rows[pos].cells[5].innerHTML=process[j][5];
             if(tbody.rows[pos].style.backgroundColor!="cyan"){
                 tbody.rows[pos].style.backgroundColor=color;
             }
@@ -369,77 +275,209 @@ function llenarTabla(){
     }
 }
 //metodos de gestion de procesos
-function RoundRobin(){
-    count++;
+function FIFO() {
     tim=tim-1;
-    process[0][6]=tim;
+    process[0][5]=tim;
     time.innerHTML = tim;
     llenarTabla();
-    if(tim==0){
-        if(process[0][2]!="BLOQUEADO"){
-                process[0][2]="FINALIZADO";
-                if(final.value==""){
-                    final.value=process[0][1];
-                }else{
-                    final.value+=" "+process[0][1];
+    prop= parseInt(Math.random()*99+1)
+    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
+    if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
+        prop= parseInt(Math.random()*19+1)
+        if(prop<=10){
+            process[0][1]="ESPERA"
+            sleep.value+=" "+process[0][0];
+        }else{
+            process[0][1]="DETENIDO"
+            stop.value+=" "+process[0][0];
+        }
+        process.push(process[0])
+        process.shift()
+        cola.value="";
+        run.value="";
+        llenarTabla()
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(i==0){
+                    run.value=process[i][0];
+                    process[i][1]="EJECUTANDO";
+                }else if(i==1 && process[i][1]!="DETENIDO" && process[i][1]!="ESPERA"){
+                    cola.value=process[i][0];
+                    process[i][1]="PREPARADO"
+                }else if(process[i][1]!="DETENIDO" && process[i][1]!="ESPERA"){
+                    cola.value+=" "+process[i][0];
+                    process[i][1]="PREPARADO"
                 }
             }
-            prep.value="";
-            exec.value="";
-            count=0;
-            process[0][3]=-1;
-            process[0][4]=-1;
-            process[0][6]=0;
-            llenarTabla()
-            process.shift();
-            if(process.length!=0){
-                for(i=0;i<process.length;i++){
-                    process[i][3]=i;
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("FIFO()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
+    }else if(tim==0){
+        if(process[0][1]!="BLOQUEADO"){
+            process[0][1]="FINALIZADO";
+            if(final.value==""){
+                final.value=process[0][0];
+            }else{
+                final.value+=" "+process[0][0];
+            }
+        }
+        cola.value="";
+        run.value="";
+        count=0;
+        process[0][2]="?";
+        process[0][3]="?";
+        process[0][4]="?";
+        process[0][5]="?";
+        process[0][6]="?";
+        llenarTabla()
+        process.shift();
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(i==0){
+                    run.value=process[i][0];
+                    process[i][1]="EJECUTANDO";
+                }else if(i==1){
+                    cola.value=process[i][0];
+                    process[i][1]="PREPARADO"
+                }else{
+                    cola.value+=" "+process[i][0];
+                    process[i][1]="PREPARADO"
+                }
+            }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("FIFO()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
+    }else if(process.length!=0){
+        timeout=setTimeout("FIFO()",1000);
+        }
+}
+function RoundRobin(){
+    q=getQ();
+    count++;
+    tim=tim-1;
+    process[0][5]=tim;
+    time.innerHTML = tim;
+    llenarTabla();
+    prop= parseInt(Math.random()*99+1)
+    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
+    if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
+        prop= parseInt(Math.random()*19+1)
+        if(prop<=10){
+            process[0][1]="ESPERA"
+            sleep.value+=" "+process[0][0];
+        }else{
+            process[0][1]="DETENIDO"
+            stop.value+=" "+process[0][0];
+        }
+        process.push(process[0])
+        process.shift()
+        cola.value="";
+        run.value="";
+        count=0;
+        llenarTabla()
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(i==0){
+                    run.value=process[i][0];
+                    process[i][1]="EJECUTANDO";
+                }else if(i==1 && process[i][1]!="DETENIDO" && process[i][1]!="ESPERA"){
+                    cola.value=process[i][0];
+                    process[i][1]="PREPARADO"
+                }else if(process[i][1]!="DETENIDO" && process[i][1]!="ESPERA"){
+                    cola.value+=" "+process[i][0];
+                    process[i][1]="PREPARADO"
+                }
+            }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("RoundRobin()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
+    }else if(tim==0){
+        if(process[0][1]!="BLOQUEADO"){
+            process[0][1]="FINALIZADO";
+            if(final.value==""){
+                final.value=process[0][0];
+            }else{
+                final.value+=" "+process[0][0];
+            }
+        }
+        cola.value="";
+        run.value="";
+        count=0;
+        process[0][2]="?";
+        process[0][3]="?";
+        process[0][4]="?";
+        process[0][5]="?";
+        process[0][6]="?";
+        llenarTabla()
+        process.shift();
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(process[i][1]!="DETENIDO" && process[i][1]!="ESPERA"){
                     if(i==0){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO"
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO"
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO"
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO"
                     }
                 }
-                llenarTabla();
-                tim=process[0][6];
-                time.innerHTML = tim;
-                timeout=setTimeout("RoundRobin()",1000);
-            }else{
-                exec.value+=process[0][1];
-                prep.value="";
+
             }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("RoundRobin()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
     }else if(count==q){
         count=0;
         if(process.length>1){
+            process.push(process[0])
+            process.shift()
             for(i=0;i<process.length;i++){
-                process[i][3]=i-1;
-                if(i==0){
-                    process[i][3]=process.length-1;
-                    process[i][6]=tim;
-                    process[i][2]="PREPARADO"
-                }else if(i==1){
-                    process[i][2]="EJECUTANDO";
-                    exec.value=process[i][1];
-                }else if(i==2){
-                    prep.value=process[i][1];
-                    process[i][2]="PREPARADO"
-                }else{
-                    prep.value+=" "+process[i][1];
-                    process[i][2]="PREPARADO"
+                if(process[i][1]!="DETENIDO" && process[i][1]!="ESPERA"){
+                    if(i==0){
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
+                    }else if(i==1){
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO"
+                    }else{
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO"
+                    }
                 }
             }
-            prep.value+=" "+process[0][1];
-            process= process.sort(function(a,b) {
-                return a[3] - b[3];
-            });
             llenarTabla();
-            tim=process[0][6];
+            tim=process[0][5];
             time.innerHTML = tim;
             timeout=setTimeout("RoundRobin()",1000);
         }else if(tim>0 && process.length>=1){
@@ -450,148 +488,243 @@ function RoundRobin(){
         count==0;
         timeout=setTimeout("RoundRobin()",1000);
     }
-    
+    q=getQ();
 }
-function FIFO() {
+function SJF(){
     tim=tim-1;
+    process[0][5]=tim;
     time.innerHTML = tim;
-    process[0][6]=tim;
     llenarTabla();
-    if(tim==0){
-        if(process[0][2]!="BLOQUEADO"){
-                process[0][2]="FINALIZADO";
-                if(final.value==""){
-                    final.value=process[0][1];
-                }else{
-                    final.value+=" "+process[0][1];
-                }
-            }
-            prep.value="";
-            exec.value="";
-            count=0;
-            process[0][3]=-1;
-            process[0][4]=-1;
-            process[0][6]=0;
-            llenarTabla()
-            process.shift();
-            if(process.length!=0){
-                for(i=0;i<process.length;i++){
-                    process[i][3]=i;
-                    if(i<1){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
-                    }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO"
-                    }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO"
-                    }
-                }
-                llenarTabla();
-                tim=process[0][6];
-                time.innerHTML = tim;
-                timeout=setTimeout("FIFO()",1000);
-            }else{
-                exec.value+=process[0][1];
-                prep.value="";
-            }
-    }else if(process.length!=0){
-        timeout=setTimeout("FIFO()",1000);
-    }
-}
-function SFJ(){
-    tim=tim-1;
-    time.innerHTML = tim;
-    process[0][6]=tim;
-    llenarTabla();
-    if(tim==0){
-        if(process[0][2]!="BLOQUEADO"){
-                process[0][2]="FINALIZADO";
-                if(final.value==""){
-                    final.value=process[0][1];
-                }else{
-                    final.value+=" "+process[0][1];
-                }
-            }
-            prep.value="";
-            exec.value="";
-            count=0;
-            process[0][3]=-1;
-            process[0][4]=-1;
-            process[0][6]=0;
-            llenarTabla()
-            process.shift();
-            if(process.length!=0){
-                for(i=0;i<process.length;i++){
+    prop= parseInt(Math.random()*99+1)
+    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
+    if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
+        prop= parseInt(Math.random()*19+1)
+        if(prop<=10){
+            process[0][1]="ESPERA"
+            sleep.value+=" "+process[0][0];
+        }else{
+            process[0][1]="DETENIDO"
+            stop.value+=" "+process[0][0];
+        }
+        process.push(process[0])
+        process.shift()
+        sort(5);
+        cola.value="";
+        run.value="";
+        llenarTabla()
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(process[i][1]=="PREPARADO"){
                     if(i==0){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO"
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO"
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO"
-                    }
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO"
+                        }
                 }
-                llenarTabla();
-                tim=process[0][6];
-                time.innerHTML = tim;
-                timeout=setTimeout("SFJ()",1000);
-            }else{
-                exec.value+=process[0][1];
-                prep.value="";
             }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("SJF()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
+    }else if(tim==0){
+        if(process[0][1]!="BLOQUEADO"){
+            process[0][1]="FINALIZADO";
+            if(final.value==""){
+                final.value=process[0][0];
+            }else{
+                final.value+=" "+process[0][0];
+            }
+        }
+        cola.value="";
+        run.value="";
+        count=0;
+        process[0][2]="?";
+        process[0][3]="?";
+        process[0][4]="?";
+        process[0][5]="?";
+        process[0][6]="?";
+        llenarTabla()
+        process.shift();
+        sort(5);
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(process[i][1]=="PREPARADO"){
+                    if(i==0){
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
+                    }else if(i==1){
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO"
+                    }else{
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO"
+                        }
+                }
+            }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("SJF()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
     }else if(process.length!=0){
-        timeout=setTimeout("SFJ()",1000);
-    }
+        timeout=setTimeout("SJF()",1000);
+        }
 }
 function Prioridad(){
     tim=tim-1;
+    process[0][5]=tim;
     time.innerHTML = tim;
-    process[0][6]=tim;
     llenarTabla();
-    if(tim==0){
-        if(process[0][2]!="BLOQUEADO"){
-                process[0][2]="FINALIZADO";
-                if(final.value==""){
-                    final.value=process[0][1];
-                }else{
-                    final.value+=" "+process[0][1];
-                }
-            }
-            prep.value="";
-            exec.value="";
-            count=0;
-            process[0][3]=-1;
-            process[0][4]=-1;
-            process[0][6]=0;
-            llenarTabla()
-            process.shift();
-            if(process.length!=0){
-                for(i=0;i<process.length;i++){
-                    process[i][4]=i;
+    prop= parseInt(Math.random()*99+1)
+    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
+    if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
+        prop= parseInt(Math.random()*19+1)
+        if(prop<=10){
+            process[0][1]="ESPERA"
+            sleep.value+=" "+process[0][0];
+        }else{
+            process[0][1]="DETENIDO"
+            stop.value+=" "+process[0][0];
+        }
+        process.push(process[0])
+        process.shift()
+        sort(3);
+        cola.value="";
+        run.value="";
+        llenarTabla()
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(process[i][1]=="PREPARADO"){
                     if(i==0){
-                        exec.value=process[i][1];
-                        process[i][2]="EJECUTANDO";
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
                     }else if(i==1){
-                        prep.value=process[i][1];
-                        process[i][2]="PREPARADO"
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO"
                     }else{
-                        prep.value+=" "+process[i][1];
-                        process[i][2]="PREPARADO"
-                    }
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO"
+                        }
                 }
-                llenarTabla();
-                tim=process[0][6];
-                time.innerHTML = tim;
-                timeout=setTimeout("Prioridad()",1000);
-            }else{
-                exec.value+=process[0][1];
-                prep.value="";
             }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("Prioridad()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
+    }else if(tim==0){
+        if(process[0][1]!="BLOQUEADO"){
+            process[0][1]="FINALIZADO";
+            if(final.value==""){
+                final.value=process[0][0];
+            }else{
+                final.value+=" "+process[0][0];
+            }
+        }
+        cola.value="";
+        run.value="";
+        count=0;
+        process[0][2]="?";
+        process[0][3]="?";
+        process[0][4]="?";
+        process[0][5]="?";
+        process[0][6]="?";
+        llenarTabla()
+        process.shift();
+        sort(3);
+        if(process.length!=0){
+            for(i=0;i<process.length;i++){
+                if(process[i][1]=="PREPARADO"){
+                    if(i==0){
+                        run.value=process[i][0];
+                        process[i][1]="EJECUTANDO";
+                    }else if(i==1){
+                        cola.value=process[i][0];
+                        process[i][1]="PREPARADO"
+                    }else{
+                        cola.value+=" "+process[i][0];
+                        process[i][1]="PREPARADO"
+                        }
+                }
+            }
+            llenarTabla();
+            tim=process[0][5];
+            time.innerHTML = tim;
+            timeout=setTimeout("Prioridad()",1000);
+        }else{
+            if(process.length=0){
+                run.value+=process[0][0];
+            }
+            cola.value="";
+        }
     }else if(process.length!=0){
         timeout=setTimeout("Prioridad()",1000);
+        }
+}
+//Funciones de apoyo
+function bloquear(){
+    
+    if(process.length!=0){
+        sleep.value=""
+        stop.value=""
+        for(i=0;i<process.length;i++){
+            if(process[i][1]=="DETENIDO"){
+                stop.value+=" "+process[i][0]
+            }else if(process[i][1]=="ESPERA"){
+                sleep.value+=" "+process[i][0]
+            }
+        }
+        for(i=0;i<process.length;i++){
+            if(process[i][1]=="DETENIDO" || process[i][1]=="ESPERA"){
+                process[i][6]+=-1;
+                if(process[i][6]==0){
+                    process[i][1]="PREPARADO"
+                    }
+                }
+            }
+        sleep.value=""
+        stop.value=""
+        for(i=0;i<process.length;i++){
+            if(process[i][1]=="DETENIDO"){
+                stop.value+=" "+process[i][0]
+            }else if(process[i][1]=="ESPERA"){
+                sleep.value+=" "+process[i][0]
+            }
+        }
+        llenarTabla()
+        timeout2=setTimeout("bloquear()",1000);
+    }
+}
+function sort(n){
+    process= process.sort(function(a,b) {
+        return a[n] - b[n];
+    });
+}
+function getQ(){
+    if (bandQAuto){
+        return process[0][7]
+    }else{
+        return document.getElementById("quantum").value;
     }
 }

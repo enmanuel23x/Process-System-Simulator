@@ -32,7 +32,7 @@ a:hover{
  }
  /*TABLE*/
  .table{
-    width: 702px;
+    width: 756px;
     display: block;
  }
  
@@ -62,7 +62,7 @@ td {
  }
  /*TABLE2*/
  .table2{
-    width: 1002px;
+    width: auto;
     display:block;
 }
 .table2 tbody td,.table2 thead th {
@@ -111,8 +111,8 @@ td {
     margin-bottom: 1rem;
 }
 img{
-    width: 150px;
-    height: 150px;
+    width: 90px;
+    height: 90px;
     vertical-align: initial;
 }
 p{
