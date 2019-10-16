@@ -9,7 +9,6 @@ const si = require('systeminformation');
 // promises style - new since version 3
 l = await si.processes()
 l=l.list
-
 l = _.sortBy(l, 'pid');
     const psaux =require('psaux')
 	psaux().then(list2 => {
@@ -20,9 +19,9 @@ l = _.sortBy(l, 'pid');
                 for(k=0;k<l.length;k++){
                     if(list2[i].pid==l[k].pid){
                         if(list2[i].stat!=undefined){
-                        arr.push([list2[i].name,list2[i].pid,list2[i].stat,l[k].pcpu,l[k].pmem])
+                        arr.push([l[k].name,list2[i].pid,list2[i].stat,l[k].pcpu,l[k].pmem])
                         }else{
-                            arr.push([list2[i].name,list2[i].pid,'?',l[k].pcpu,l[k].pmem])
+                            arr.push([l[k].name,list2[i].pid,'?',l[k].pcpu,l[k].pmem])
                         }
                         break
                     }else if(k==l.length-1){
