@@ -29,7 +29,7 @@
         <div id="lista">
                 <h2>Lista</h2>
             <div class="nav-sim">
-                <table class="table" style="margin-left: 50px;float: left;margin-right: 20px;">
+                <table class="table" style="width: 742px; ;margin-left: 50px;float: left;margin-right: 20px;">
                         <thead class="thead-light">
                         <tr class="head-table">
                             <th scope="col">Nombre </th>
@@ -38,6 +38,7 @@
                             <th scope="col">Prioridad</th>
                             <th scope="col">Memoria </th>
                             <th scope="col">Rafaga </th>
+                            <th scope="col">Periferico</th>
                         </tr>
                         </thead>
                         <tbody style="height: 440px;" id="bodyTable"></tbody>
@@ -102,17 +103,13 @@
                     <div class="nav-sim" style="display: contents;">
                         <p style="margin-left: 520px">Zombie/Dead</p>
                         <textarea id="dead" class="ta"rows="4" cols="30"style="margin-left: 520px;"  readonly></textarea>
-                        <textarea id="input-simulador" class="ta"rows="4" cols="9" style="margin-left: 200px;color: rgb(200,200,200); background-color: rgb(50,50,50);" readonly>Teclado Raton Impresora Microfono
-                        </textarea>
                         <br>
                         <img src="../../src/views/assets/img/arrow.png"  style="margin-left: 640px;transform: rotate(90deg);width: 30px;height: 30px;">
-                        <p style="margin-left:158px">Espera &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            Ejecución&nbsp;<span id='time'></span>s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            Parado</p>
+                        <br>
+                    <label style="margin-left:158px;display: inline-flex;">Espera</label>
+                    <label style="margin-left:311px;display: inline-flex;">Ejecución/Cola:</label><span id='time'></span>s
+                    <label style="margin-left:238px;display: inline-flex;">Detenido</label>
+                    <br>
                             <textarea id="sleep" class="ta"rows="4" cols="30" style="margin-left: 158px;" readonly>
                             </textarea>
                             <img src="../../src/views/assets/img/arrow.png">

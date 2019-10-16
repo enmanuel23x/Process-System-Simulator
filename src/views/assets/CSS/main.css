@@ -44,7 +44,7 @@ a:hover{
     overflow: auto;
  }
  .table tbody td,.table thead th {
-    width: 100px;
+    width: 80px;
     display: inline-block;
 }
 td {

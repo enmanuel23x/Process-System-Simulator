@@ -17,6 +17,7 @@ var memo_ram=0;
 var memo_virtual=0;
 var bandbutton=true;
 var bandQAuto=true
+var teclado="", mouse="", escaner=""
 //Cambio de lista a simulador y simulador a lista
 var changevalue=true;
 function change(){
@@ -176,7 +177,7 @@ function cargar(){
         prioridad = parseInt((Math.random() * 25))
         memo= 1024 * parseInt(Math.random()*9+1)
         quant = parseInt(Math.random()*4+1) 
-        lp.push([PName,'NUEVO',PID,prioridad,memo,tBurst,tBloqueado,quant])
+        lp.push([PName,'NUEVO',PID,prioridad,memo,tBurst,tBloqueado,quant,"X"])
     }
     html='';
     let p=[]
@@ -199,6 +200,9 @@ function cargar(){
         html += '</td>';
         html += '<td>';
         html += lp[i][5];
+        html += '</td>';
+        html+= '<td>';
+        html += lp[i][8];
         html += '</td>';
         html += '</tr>';
     }
@@ -268,6 +272,7 @@ function llenarTabla(){
             tbody.rows[pos].cells[3].innerHTML=process[j][3];
             tbody.rows[pos].cells[4].innerHTML=process[j][4];
             tbody.rows[pos].cells[5].innerHTML=process[j][5];
+            tbody.rows[pos].cells[6].innerHTML=process[j][8];
             if(tbody.rows[pos].style.backgroundColor!="cyan"){
                 tbody.rows[pos].style.backgroundColor=color;
             }
@@ -281,12 +286,55 @@ function FIFO() {
     time.innerHTML = tim;
     llenarTabla();
     prop= parseInt(Math.random()*99+1)
-    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
     if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
         prop= parseInt(Math.random()*19+1)
         if(prop<=10){
             process[0][1]="ESPERA"
             sleep.value+=" "+process[0][0];
+            let opc=true
+            while(opc){
+                switch (parseInt(Math.random()*(5)+1)){
+                    case 1:
+                        //impresora
+                        process[0][8]="impresora"
+                        opc=false
+                        break
+                    case 2:
+                        //microfono
+                        process[0][8]="microfono"
+                        opc=false
+                        break
+                    case 3:
+                        //altavoz
+                        process[0][8]="altavoz"
+                        opc=false
+                        break
+                    case 4:
+                        //teclado
+                        if(teclado==""){
+                            process[0][8]="teclado"
+                            teclado=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 5:
+                        //mouse
+                        if(mouse==""){
+                            process[0][8]="mouse"
+                            mouse=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 6:
+                        //escaner
+                        if(escaner==""){
+                            process[0][8]="escaner"
+                            escaner=process[0][0]
+                            opc=false
+                        }
+                        break
+                }
+            }
         }else{
             process[0][1]="DETENIDO"
             stop.value+=" "+process[0][0];
@@ -373,12 +421,55 @@ function RoundRobin(){
     time.innerHTML = tim;
     llenarTabla();
     prop= parseInt(Math.random()*99+1)
-    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
     if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
         prop= parseInt(Math.random()*19+1)
         if(prop<=10){
             process[0][1]="ESPERA"
             sleep.value+=" "+process[0][0];
+            let opc=true
+            while(opc){
+                switch (parseInt(Math.random()*(5)+1)){
+                    case 1:
+                        //impresora
+                        process[0][8]="impresora"
+                        opc=false
+                        break
+                    case 2:
+                        //microfono
+                        process[0][8]="microfono"
+                        opc=false
+                        break
+                    case 3:
+                        //altavoz
+                        process[0][8]="altavoz"
+                        opc=false
+                        break
+                    case 4:
+                        //teclado
+                        if(teclado==""){
+                            process[0][8]="teclado"
+                            teclado=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 5:
+                        //mouse
+                        if(mouse==""){
+                            process[0][8]="mouse"
+                            mouse=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 6:
+                        //escaner
+                        if(escaner==""){
+                            process[0][8]="escaner"
+                            escaner=process[0][0]
+                            opc=false
+                        }
+                        break
+                }
+            }
         }else{
             process[0][1]="DETENIDO"
             stop.value+=" "+process[0][0];
@@ -496,12 +587,55 @@ function SJF(){
     time.innerHTML = tim;
     llenarTabla();
     prop= parseInt(Math.random()*99+1)
-    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
     if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
         prop= parseInt(Math.random()*19+1)
         if(prop<=10){
             process[0][1]="ESPERA"
             sleep.value+=" "+process[0][0];
+            let opc=true
+            while(opc){
+                switch (parseInt(Math.random()*(5)+1)){
+                    case 1:
+                        //impresora
+                        process[0][8]="impresora"
+                        opc=false
+                        break
+                    case 2:
+                        //microfono
+                        process[0][8]="microfono"
+                        opc=false
+                        break
+                    case 3:
+                        //altavoz
+                        process[0][8]="altavoz"
+                        opc=false
+                        break
+                    case 4:
+                        //teclado
+                        if(teclado==""){
+                            process[0][8]="teclado"
+                            teclado=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 5:
+                        //mouse
+                        if(mouse==""){
+                            process[0][8]="mouse"
+                            mouse=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 6:
+                        //escaner
+                        if(escaner==""){
+                            process[0][8]="escaner"
+                            escaner=process[0][0]
+                            opc=false
+                        }
+                        break
+                }
+            }
         }else{
             process[0][1]="DETENIDO"
             stop.value+=" "+process[0][0];
@@ -592,12 +726,55 @@ function Prioridad(){
     time.innerHTML = tim;
     llenarTabla();
     prop= parseInt(Math.random()*99+1)
-    console.log(prop+"-"+prop_bloqueo+"-"+process[0][6])
     if(prop<=prop_bloqueo && tim!=0 && process[0][6]>0){
         prop= parseInt(Math.random()*19+1)
         if(prop<=10){
             process[0][1]="ESPERA"
             sleep.value+=" "+process[0][0];
+            let opc=true
+            while(opc){
+                switch (parseInt(Math.random()*(5)+1)){
+                    case 1:
+                        //impresora
+                        process[0][8]="impresora"
+                        opc=false
+                        break
+                    case 2:
+                        //microfono
+                        process[0][8]="microfono"
+                        opc=false
+                        break
+                    case 3:
+                        //altavoz
+                        process[0][8]="altavoz"
+                        opc=false
+                        break
+                    case 4:
+                        //teclado
+                        if(teclado==""){
+                            process[0][8]="teclado"
+                            teclado=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 5:
+                        //mouse
+                        if(mouse==""){
+                            process[0][8]="mouse"
+                            mouse=process[0][0]
+                            opc=false
+                        }
+                        break
+                    case 6:
+                        //escaner
+                        if(escaner==""){
+                            process[0][8]="escaner"
+                            escaner=process[0][0]
+                            opc=false
+                        }
+                        break
+                }
+            }
         }else{
             process[0][1]="DETENIDO"
             stop.value+=" "+process[0][0];
@@ -684,7 +861,6 @@ function Prioridad(){
 }
 //Funciones de apoyo
 function bloquear(){
-    
     if(process.length!=0){
         sleep.value=""
         stop.value=""
@@ -698,7 +874,15 @@ function bloquear(){
         for(i=0;i<process.length;i++){
             if(process[i][1]=="DETENIDO" || process[i][1]=="ESPERA"){
                 process[i][6]+=-1;
-                if(process[i][6]==0){
+                if(process[i][6]<=0){
+                    if(process[i][8]=="teclado"){
+                        teclado=""
+                    }else if(process[i][8]=="mouse"){
+                        mouse=""
+                    }else if(process[i][8]=="escaner"){
+                        escaner=""
+                    }
+                    process[i][8]="X"
                     process[i][1]="PREPARADO"
                     }
                 }
