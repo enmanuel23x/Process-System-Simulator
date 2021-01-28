@@ -11,7 +11,7 @@
   "dependencies": {
     "chart.js": "^2.8.0",
     "current-processes": "^0.2.1",
-    "electron": "^6.0.0",
+    "electron": "^9.4.0",
     "lodash": "^4.17.15",
     "os-utils": "0.0.14",
     "ps-node": "^0.1.6",
